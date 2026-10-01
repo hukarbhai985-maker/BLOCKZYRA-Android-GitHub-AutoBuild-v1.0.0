@@ -3807,20 +3807,45 @@ document.addEventListener('click', function(e){
 }, true);
 </script>
 <script>
-window.addEventListener('load', function () {
-  setTimeout(function () {
-    const splash = document.getElementById('blockzyraSplash');
+const splash = document.getElementById('blockzyraSplash');
+const loadingText = document.querySelector('.bzLoadingText');
 
-    if (splash) {
-      splash.style.transition = 'opacity 0.3s ease';
-      splash.style.opacity = '0';
+if (splash && loadingText) {
 
-      setTimeout(function () {
-        splash.style.display = 'none';
-      }, 300);
+  const messages = [
+    'INITIALIZING SYSTEM...',
+    'LOADING BLOCKZYRA...',
+    'PREPARING GAME ENGINE...',
+    'SYNCING PLAYER DATA...',
+    'LOADING GAME WORLD...',
+    'ALMOST READY...'
+  ];
+
+  let i = 0;
+
+  loadingText.textContent = messages[0];
+
+  const textTimer = setInterval(() => {
+    i++;
+
+    if (i < messages.length) {
+      loadingText.textContent = messages[i];
     }
-  }, 2200);
-});
-</script>
+  }, 850);
+
+  setTimeout(() => {
+    clearInterval(textTimer);
+    loadingText.textContent = '✓ READY TO PLAY';
+  }, 5000);
+
+  setTimeout(() => {
+    splash.classList.add('bzSplashExit');
+
+    setTimeout(() => {
+      splash.style.display = 'none';
+    }, 800);
+
+  }, 5600);
+  }
 </body>
 </html>
