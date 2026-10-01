@@ -3807,11 +3807,11 @@ document.addEventListener('click', function(e){
 }, true);
 </script>
 <script>
+<script>
 const splash = document.getElementById('blockzyraSplash');
 const loadingText = document.querySelector('.bzLoadingText');
 
 if (splash && loadingText) {
-
   const messages = [
     'INITIALIZING SYSTEM...',
     'LOADING BLOCKZYRA...',
@@ -3822,7 +3822,6 @@ if (splash && loadingText) {
   ];
 
   let i = 0;
-
   loadingText.textContent = messages[0];
 
   const textTimer = setInterval(() => {
@@ -3830,22 +3829,20 @@ if (splash && loadingText) {
 
     if (i < messages.length) {
       loadingText.textContent = messages[i];
+    } else {
+      clearInterval(textTimer);
+      loadingText.textContent = 'READY';
+
+      setTimeout(() => {
+        splash.classList.add('bzSplashExit');
+
+        setTimeout(() => {
+          splash.style.display = 'none';
+        }, 800);
+      }, 500);
     }
   }, 850);
-
-  setTimeout(() => {
-    clearInterval(textTimer);
-    loadingText.textContent = '✓ READY TO PLAY';
-  }, 5000);
-
-  setTimeout(() => {
-    splash.classList.add('bzSplashExit');
-
-    setTimeout(() => {
-      splash.style.display = 'none';
-    }, 800);
-
-  }, 5600);
-  }
+}
+</script>
 </body>
 </html>
