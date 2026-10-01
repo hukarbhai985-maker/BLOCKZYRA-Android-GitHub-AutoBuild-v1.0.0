@@ -1,10 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.BLOCKZYRA" parent="android:style/Theme.Material.Light.NoActionBar">
+
+    <style name="Theme.BLOCKZYRA" parent="android:style/Theme.Material.NoActionBar">
+
         <item name="android:fontFamily">sans</item>
-        <item name="android:colorAccent">#6C8CFF</item>
+
+        <item name="android:colorAccent">#00E5FF</item>
+
         <item name="android:navigationBarColor">#04061F</item>
         <item name="android:statusBarColor">#04061F</item>
+
         <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+
+        <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
+
+        <item name="android:windowBackground">#04061F</item>
+
     </style>
+
 </resources>
