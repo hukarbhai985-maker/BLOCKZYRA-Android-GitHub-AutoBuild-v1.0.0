@@ -3635,5 +3635,21 @@ document.addEventListener('click', function(e){
   }
 }, true);
 </script>
+<script>
+window.addEventListener('load', function () {
+  setTimeout(function () {
+    const splash = document.getElementById('blockzyraSplash');
+
+    if (splash) {
+      splash.style.transition = 'opacity 0.3s ease';
+      splash.style.opacity = '0';
+
+      setTimeout(function () {
+        splash.style.display = 'none';
+      }, 300);
+    }
+  }, 2200);
+});
+</script>
 </body>
 </html>
