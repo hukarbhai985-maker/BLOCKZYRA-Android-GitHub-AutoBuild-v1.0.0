@@ -472,6 +472,8 @@
   .cosmName{font-size:9px; font-weight:700; color:#dfe6ff; text-align:center; line-height:1.15;}
   .cosmLockCost{font-size:9px; font-weight:800; color:#ffd35c;}
   .cosmCheck{position:absolute; top:3px; right:3px; font-size:11px; color:#3ddc97;}
+/* ===== BLOCKZYRA PROFESSIONAL STARTUP ===== */
+
 #blockzyraSplash{
   position:absolute;
   inset:0;
@@ -480,55 +482,224 @@
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  background:linear-gradient(180deg,#181450,#04061f);
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(0,229,255,.16), transparent 30%),
+    radial-gradient(circle at 20% 80%, rgba(108,140,255,.12), transparent 32%),
+    linear-gradient(180deg,#090b2b 0%,#04061f 55%,#020318 100%);
   color:#fff;
   text-align:center;
+  opacity:1;
+  transform:scale(1);
+  transition:
+    opacity .8s ease,
+    transform .8s cubic-bezier(.2,.8,.2,1);
 }
 
+/* Moving light glow */
+#blockzyraSplash::before{
+  content:"";
+  position:absolute;
+  width:260px;
+  height:260px;
+  border-radius:50%;
+  background:rgba(0,229,255,.10);
+  filter:blur(45px);
+  animation:bzGlow 3s ease-in-out infinite alternate;
+}
+
+/* Small cinematic particles */
+#blockzyraSplash::after{
+  content:"✦  ·  ✧  ·  ✦  ·  ·  ✧  ·  ✦";
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:rgba(120,220,255,.18);
+  font-size:18px;
+  letter-spacing:18px;
+  animation:bzParticles 4s ease-in-out infinite;
+  pointer-events:none;
+}
+
+/* Main logo */
 .bzSplashLogo{
+  position:relative;
+  z-index:2;
   font-size:42px;
+  line-height:1;
   font-weight:1000;
-  letter-spacing:3px;
-  text-shadow:0 0 18px rgba(108,140,255,.9);
+  letter-spacing:4px;
+  color:#fff;
+  text-shadow:
+    0 0 8px rgba(0,229,255,.9),
+    0 0 22px rgba(0,229,255,.65),
+    0 0 45px rgba(108,140,255,.45);
+  animation:bzLogoEnter 1.2s cubic-bezier(.2,.8,.2,1) both,
+            bzLogoPulse 2.4s ease-in-out 1.2s infinite;
 }
 
+/* Subtitle */
 .bzSplashSub{
-  margin-top:8px;
-  font-size:11px;
-  font-weight:800;
-  letter-spacing:2px;
-  color:#c8cff0;
+  position:relative;
+  z-index:2;
+  margin-top:12px;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:3px;
+  color:#a9c7ff;
+  opacity:0;
+  animation:bzSubEnter .8s ease .55s forwards;
 }
 
+/* Loading area */
 .bzLoader{
-  width:190px;
-  height:6px;
-  margin-top:28px;
-  border-radius:10px;
+  position:relative;
+  z-index:2;
+  width:220px;
+  height:7px;
+  margin-top:34px;
+  border-radius:20px;
   overflow:hidden;
-  background:rgba(255,255,255,.15);
+  background:rgba(255,255,255,.10);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.06),
+    0 0 18px rgba(0,229,255,.12);
 }
 
+/* Loading progress */
 .bzLoaderBar{
   width:0%;
   height:100%;
-  border-radius:10px;
-  background:#6C8CFF;
-  animation:bzLoading 2.2s linear forwards;
+  border-radius:20px;
+  background:linear-gradient(90deg,#6c8cff,#00e5ff,#ffffff);
+  box-shadow:
+    0 0 10px rgba(0,229,255,.9),
+    0 0 22px rgba(0,229,255,.55);
+  animation:bzLoading 5.6s cubic-bezier(.2,.7,.2,1) forwards;
 }
 
+/* Loading text */
 .bzLoadingText{
-  margin-top:12px;
+  position:relative;
+  z-index:2;
+  margin-top:14px;
+  min-height:14px;
   font-size:10px;
-  font-weight:800;
-  letter-spacing:1.5px;
-  color:#9faee8;
+  font-weight:900;
+  letter-spacing:2px;
+  color:#8fa8e8;
+  animation:bzTextPulse 1.2s ease-in-out infinite;
 }
 
-@keyframes bzLoading{
-  from{width:0%}
-  to{width:100%}
+/* Bottom brand line */
+#blockzyraSplash .bzLoadingText::after{
+  content:"";
+  display:block;
+  width:32px;
+  height:2px;
+  margin:8px auto 0;
+  border-radius:5px;
+  background:#00e5ff;
+  box-shadow:0 0 10px rgba(0,229,255,.8);
+}
+
+/* Logo entrance */
+@keyframes bzLogoEnter{
+  0%{
+    opacity:0;
+    transform:translateY(28px) scale(.72);
+    filter:blur(10px);
   }
+  65%{
+    opacity:1;
+    transform:translateY(-3px) scale(1.04);
+    filter:blur(0);
+  }
+  100%{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    filter:blur(0);
+  }
+}
+
+/* Logo breathing glow */
+@keyframes bzLogoPulse{
+  0%,100%{
+    text-shadow:
+      0 0 8px rgba(0,229,255,.8),
+      0 0 22px rgba(0,229,255,.55),
+      0 0 42px rgba(108,140,255,.35);
+  }
+  50%{
+    text-shadow:
+      0 0 12px rgba(0,229,255,1),
+      0 0 30px rgba(0,229,255,.75),
+      0 0 58px rgba(108,140,255,.5);
+  }
+}
+
+/* Subtitle entrance */
+@keyframes bzSubEnter{
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* Loading */
+@keyframes bzLoading{
+  0%{width:0%}
+  18%{width:22%}
+  42%{width:48%}
+  68%{width:72%}
+  88%{width:91%}
+  100%{width:100%}
+}
+
+/* Glow movement */
+@keyframes bzGlow{
+  from{
+    transform:scale(.75);
+    opacity:.55;
+  }
+  to{
+    transform:scale(1.25);
+    opacity:1;
+  }
+}
+
+/* Particle movement */
+@keyframes bzParticles{
+  0%,100%{
+    opacity:.15;
+    transform:scale(.92) translateY(8px);
+  }
+  50%{
+    opacity:.45;
+    transform:scale(1.05) translateY(-8px);
+  }
+}
+
+/* Loading text pulse */
+@keyframes bzTextPulse{
+  0%,100%{opacity:.55}
+  50%{opacity:1}
+}
+
+/* Smooth exit */
+#blockzyraSplash.bzSplashExit{
+  opacity:0;
+  transform:scale(1.04);
+  pointer-events:none;
+}
+
+/* ===== END BLOCKZYRA PROFESSIONAL STARTUP ===== */
 </style>
 </head>
 <body>
