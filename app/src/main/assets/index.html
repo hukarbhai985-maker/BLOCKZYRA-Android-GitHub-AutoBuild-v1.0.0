@@ -472,6 +472,63 @@
   .cosmName{font-size:9px; font-weight:700; color:#dfe6ff; text-align:center; line-height:1.15;}
   .cosmLockCost{font-size:9px; font-weight:800; color:#ffd35c;}
   .cosmCheck{position:absolute; top:3px; right:3px; font-size:11px; color:#3ddc97;}
+#blockzyraSplash{
+  position:absolute;
+  inset:0;
+  z-index:99999;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(180deg,#181450,#04061f);
+  color:#fff;
+  text-align:center;
+}
+
+.bzSplashLogo{
+  font-size:42px;
+  font-weight:1000;
+  letter-spacing:3px;
+  text-shadow:0 0 18px rgba(108,140,255,.9);
+}
+
+.bzSplashSub{
+  margin-top:8px;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:2px;
+  color:#c8cff0;
+}
+
+.bzLoader{
+  width:190px;
+  height:6px;
+  margin-top:28px;
+  border-radius:10px;
+  overflow:hidden;
+  background:rgba(255,255,255,.15);
+}
+
+.bzLoaderBar{
+  width:0%;
+  height:100%;
+  border-radius:10px;
+  background:#6C8CFF;
+  animation:bzLoading 2.2s linear forwards;
+}
+
+.bzLoadingText{
+  margin-top:12px;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:1.5px;
+  color:#9faee8;
+}
+
+@keyframes bzLoading{
+  from{width:0%}
+  to{width:100%}
+  }
 </style>
 </head>
 <body>
