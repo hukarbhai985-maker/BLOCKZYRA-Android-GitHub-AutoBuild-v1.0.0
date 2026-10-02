@@ -3808,73 +3808,129 @@ document.addEventListener('click', function(e){
 </script>
 <script>
 (function () {
+
   const splash = document.getElementById('blockzyraSplash');
   const loadingText = document.querySelector('.bzLoadingText');
+  const loadingBar = document.querySelector('.bzLoaderBar');
 
   if (!splash) return;
 
-  const messages = [
-    'INITIALIZING...',
-    'LOADING BLOCKZYRA...',
-    'PREPARING GAME...',
-    'READY'
-  ];
-
-  let i = 0;
   let finished = false;
   const startTime = performance.now();
 
-  if (loadingText) {
-    loadingText.textContent = messages[0];
+  const stages = [
+    'INITIALIZING...',
+    'LOADING BLOCKZYRA...',
+    'PREPARING GAME...',
+    'SYNCING GAME DATA...'
+  ];
 
-    const textTimer = setInterval(function () {
-      if (finished) {
-        clearInterval(textTimer);
-        return;
-      }
+  let stageIndex = 0;
 
-      i++;
-
-      if (i < messages.length) {
-        loadingText.textContent = messages[i];
-      } else {
-        clearInterval(textTimer);
-      }
-    }, 400);
+  function setStage(text) {
+    if (loadingText) {
+      loadingText.textContent = text;
+    }
   }
 
   function finishSplash() {
+
     if (finished) return;
+
     finished = true;
 
-    if (loadingText) {
-      loadingText.textContent = 'READY';
+    // Complete the loading bar smoothly.
+    if (loadingBar) {
+      loadingBar.style.animation = 'none';
+      loadingBar.style.width = '100%';
     }
 
-    const elapsed = performance.now() - startTime;
-    const wait = Math.max(0, 900 - elapsed);
+    // Final ready moment.
+    setStage('READY');
 
+    /*
+     * Give the READY state a very short moment,
+     * then smoothly reveal the existing Home Screen.
+     */
     setTimeout(function () {
+
       splash.classList.add('bzSplashExit');
 
       setTimeout(function () {
         splash.style.display = 'none';
-      }, 700);
+      }, 800);
 
-    }, wait);
+    }, 350);
   }
 
-  /* Normal app loading complete */
+  // Start with first status.
+  setStage(stages[0]);
+
+  // Change loading status naturally.
+  const stageTimer = setInterval(function () {
+
+    if (finished) {
+      clearInterval(stageTimer);
+      return;
+    }
+
+    stageIndex++;
+
+    if (stageIndex < stages.length) {
+      setStage(stages[stageIndex]);
+    }
+
+  }, 450);
+
+  /*
+   * Wait for the actual HTML/WebView page to finish loading.
+   * This avoids an artificial long startup delay.
+   */
+  function appReady() {
+
+    if (finished) return;
+
+    const elapsed = performance.now() - startTime;
+
+    /*
+     * Keep the professional entry visible for at least
+     * a short moment so it doesn't flash instantly.
+     */
+    const minimumTime = 1500;
+
+    const remaining = Math.max(0, minimumTime - elapsed);
+
+    setTimeout(function () {
+      clearInterval(stageTimer);
+      finishSplash();
+    }, remaining);
+  }
+
+  /*
+   * If the page is already loaded.
+   */
   if (document.readyState === 'complete') {
-    finishSplash();
+    appReady();
   } else {
-    window.addEventListener('load', finishSplash, { once: true });
+    /*
+     * Normal WebView/page loading.
+     */
+    window.addEventListener('load', appReady, { once: true });
   }
 
-  /* Safety: never let the startup screen get stuck */
+  /*
+   * Safety fallback.
+   * Even if some external resource hangs,
+   * the startup screen will NEVER remain stuck forever.
+   */
   setTimeout(function () {
-    finishSplash();
-  }, 3000);
+
+    if (!finished) {
+      clearInterval(stageTimer);
+      finishSplash();
+    }
+
+  }, 4500);
 
 })();
 </script>
