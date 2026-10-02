@@ -5,12 +5,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -23,10 +20,9 @@ public class MainActivity extends Activity {
 
     private static final int BG_COLOR = Color.rgb(4, 6, 31);
 
-    /**
-     * Professional fullscreen mode.
-     * Android 11+ uses WindowInsetsController.
-     * Older Android versions use legacy immersive flags.
+    /*
+     * Stable immersive fullscreen.
+     * Uses Android's widely compatible system UI flags.
      */
     private void enterFullscreen() {
 
@@ -35,36 +31,16 @@ public class MainActivity extends Activity {
         window.setStatusBarColor(BG_COLOR);
         window.setNavigationBarColor(BG_COLOR);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        View decorView = window.getDecorView();
 
-            window.setDecorFitsSystemWindows(false);
-
-            WindowInsetsController controller =
-                    window.getInsetsController();
-
-            if (controller != null) {
-
-                controller.hide(
-                        WindowInsets.Type.statusBars()
-                                | WindowInsets.Type.navigationBars()
-                );
-
-                controller.setSystemBarsBehavior(
-                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                );
-            }
-
-        } else {
-
-            window.getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            );
-        }
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        );
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -74,8 +50,10 @@ public class MainActivity extends Activity {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        // Dark background immediately.
-        // Prevents white flash before WebView appears.
+        /*
+         * Dark background immediately.
+         * Prevents a white flash before WebView appears.
+         */
         getWindow().setBackgroundDrawableResource(
                 android.R.color.transparent
         );
@@ -85,7 +63,9 @@ public class MainActivity extends Activity {
 
         enterFullscreen();
 
-        // Create WebView.
+        /*
+         * Create WebView.
+         */
         webView = new WebView(this);
 
         webView.setBackgroundColor(BG_COLOR);
@@ -93,7 +73,9 @@ public class MainActivity extends Activity {
         webView.setHorizontalScrollBarEnabled(false);
         webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
-        // WebView settings.
+        /*
+         * WebView settings.
+         */
         WebSettings settings = webView.getSettings();
 
         settings.setJavaScriptEnabled(true);
@@ -109,65 +91,76 @@ public class MainActivity extends Activity {
         settings.setDisplayZoomControls(false);
         settings.setSupportZoom(false);
 
-        // Keep normal browser-like rendering.
         settings.setLoadWithOverviewMode(false);
         settings.setUseWideViewPort(false);
 
-        // Chrome client for HTML/JS features.
-        webView.setWebChromeClient(
-                new WebChromeClient()
-        );
+        /*
+         * Chrome client.
+         */
+        webView.setWebChromeClient(new WebChromeClient());
 
-        // Handle links safely.
-        webView.setWebViewClient(
-                new WebViewClient() {
+        /*
+         * WebView navigation.
+         */
+        webView.setWebViewClient(new WebViewClient() {
 
-                    @Override
-                    public boolean shouldOverrideUrlLoading(
-                            WebView view,
-                            WebResourceRequest request
-                    ) {
+            @Override
+            public boolean shouldOverrideUrlLoading(
+                    WebView view,
+                    WebResourceRequest request) {
 
-                        Uri uri = request.getUrl();
+                Uri uri = request.getUrl();
 
-                        String scheme = uri.getScheme();
-
-                        if (scheme != null &&
-                                (scheme.equalsIgnoreCase("http")
-                                        || scheme.equalsIgnoreCase("https"))) {
-
-                            // Keep normal web resources inside WebView.
-                            return false;
-                        }
-
-                        // Open special links externally.
-                        try {
-
-                            Intent intent =
-                                    new Intent(
-                                            Intent.ACTION_VIEW,
-                                            uri
-                                    );
-
-                            startActivity(intent);
-
-                        } catch (Exception ignored) {
-                        }
-
-                        return true;
-                    }
+                if (uri == null) {
+                    return true;
                 }
-        );
 
-        // Put WebView on screen.
+                String scheme = uri.getScheme();
+
+                /*
+                 * HTTP/HTTPS stays inside WebView.
+                 */
+                if (scheme != null &&
+                        (scheme.equalsIgnoreCase("http")
+                                || scheme.equalsIgnoreCase("https"))) {
+
+                    return false;
+                }
+
+                /*
+                 * Special links open using Android.
+                 */
+                try {
+
+                    Intent intent = new Intent(
+                            Intent.ACTION_VIEW,
+                            uri
+                    );
+
+                    startActivity(intent);
+
+                } catch (Exception ignored) {
+                }
+
+                return true;
+            }
+        });
+
+        /*
+         * Put WebView on screen.
+         */
         setContentView(webView);
 
-        // Load the actual game.
+        /*
+         * Load the actual BLOCKZYRA game.
+         */
         webView.loadUrl(
                 "file:///android_asset/index.html"
         );
 
-        // Make sure fullscreen remains active.
+        /*
+         * Re-apply fullscreen after WebView starts.
+         */
         enterFullscreen();
     }
 
