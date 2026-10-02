@@ -3807,42 +3807,76 @@ document.addEventListener('click', function(e){
 }, true);
 </script>
 <script>
-<script>
-const splash = document.getElementById('blockzyraSplash');
-const loadingText = document.querySelector('.bzLoadingText');
+(function () {
+  const splash = document.getElementById('blockzyraSplash');
+  const loadingText = document.querySelector('.bzLoadingText');
 
-if (splash && loadingText) {
+  if (!splash) return;
+
   const messages = [
-    'INITIALIZING SYSTEM...',
+    'INITIALIZING...',
     'LOADING BLOCKZYRA...',
-    'PREPARING GAME ENGINE...',
-    'SYNCING PLAYER DATA...',
-    'LOADING GAME WORLD...',
-    'ALMOST READY...'
+    'PREPARING GAME...',
+    'READY'
   ];
 
   let i = 0;
-  loadingText.textContent = messages[0];
+  let finished = false;
+  const startTime = performance.now();
 
-  const textTimer = setInterval(() => {
-    i++;
+  if (loadingText) {
+    loadingText.textContent = messages[0];
 
-    if (i < messages.length) {
-      loadingText.textContent = messages[i];
-    } else {
-      clearInterval(textTimer);
+    const textTimer = setInterval(function () {
+      if (finished) {
+        clearInterval(textTimer);
+        return;
+      }
+
+      i++;
+
+      if (i < messages.length) {
+        loadingText.textContent = messages[i];
+      } else {
+        clearInterval(textTimer);
+      }
+    }, 400);
+  }
+
+  function finishSplash() {
+    if (finished) return;
+    finished = true;
+
+    if (loadingText) {
       loadingText.textContent = 'READY';
-
-      setTimeout(() => {
-        splash.classList.add('bzSplashExit');
-
-        setTimeout(() => {
-          splash.style.display = 'none';
-        }, 800);
-      }, 500);
     }
-  }, 850);
-}
+
+    const elapsed = performance.now() - startTime;
+    const wait = Math.max(0, 900 - elapsed);
+
+    setTimeout(function () {
+      splash.classList.add('bzSplashExit');
+
+      setTimeout(function () {
+        splash.style.display = 'none';
+      }, 700);
+
+    }, wait);
+  }
+
+  /* Normal app loading complete */
+  if (document.readyState === 'complete') {
+    finishSplash();
+  } else {
+    window.addEventListener('load', finishSplash, { once: true });
+  }
+
+  /* Safety: never let the startup screen get stuck */
+  setTimeout(function () {
+    finishSplash();
+  }, 3000);
+
+})();
 </script>
 </body>
 </html>
