@@ -3,15 +3,16 @@
 
     <style name="Theme.BLOCKZYRA" parent="android:style/Theme.Material.NoActionBar">
 
-        <!-- Basic theme -->
         <item name="android:fontFamily">sans</item>
         <item name="android:colorAccent">#00E5FF</item>
 
-        <!-- Dark game background -->
+        <!-- Dark background from the first frame -->
         <item name="android:windowBackground">#04061F</item>
 
-        <!-- Fullscreen -->
+        <!-- No title bar -->
         <item name="android:windowNoTitle">true</item>
+
+        <!-- Fullscreen -->
         <item name="android:windowFullscreen">true</item>
 
         <!-- System bars -->
@@ -19,10 +20,6 @@
         <item name="android:navigationBarColor">#04061F</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">false</item>
-
-        <!-- Android startup screen -->
-        <item name="android:windowSplashScreenBackground">#04061F</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
 
     </style>
 
