@@ -3934,5 +3934,87 @@ document.addEventListener('click', function(e){
 
 })();
 </script>
+<!-- ===== BLOCKZYRA NEW STARTUP SCREEN (start) ===== -->
+<style>
+#blockzyraSplash{display:none !important;}
+#bzpSplash{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 38%,#2a2380 0%,#13114d 48%,#04061f 100%);padding:env(safe-area-inset-top,0px) 24px env(safe-area-inset-bottom,0px);overflow:hidden;transition:opacity .6s ease,transform .6s ease;font-family:'Segoe UI',system-ui,sans-serif;}
+#bzpSplash.bzpOut{opacity:0;transform:scale(1.06);pointer-events:none;}
+.bzpGlow{position:absolute;top:30%;left:50%;width:300px;height:300px;margin:-150px 0 0 -150px;border-radius:50%;background:radial-gradient(circle,rgba(90,140,255,.45),rgba(90,140,255,0) 70%);animation:bzpPulse 2.4s ease-in-out infinite;}
+@keyframes bzpPulse{0%,100%{transform:scale(.85);opacity:.6}50%{transform:scale(1.1);opacity:1}}
+.bzpGrid{position:relative;display:grid;grid-template-columns:repeat(3,36px);gap:6px;margin-bottom:28px;}
+.bzpGrid i{display:block;width:36px;height:36px;border-radius:9px;opacity:0;transform:scale(.2) rotate(-25deg);animation:bzpPop .55s cubic-bezier(.2,1.4,.4,1) forwards;box-shadow:inset 0 -4px 0 rgba(0,0,0,.25),0 0 14px rgba(120,160,255,.4);}
+.bzpGrid i:nth-child(1){background:#3fc7fd;animation-delay:.05s}
+.bzpGrid i:nth-child(2){background:#5b8cff;animation-delay:.15s}
+.bzpGrid i:nth-child(3){background:#a66bff;animation-delay:.25s}
+.bzpGrid i:nth-child(4){background:#ff6fb1;animation-delay:.35s}
+.bzpGrid i:nth-child(5){background:#fdc22a;animation-delay:.45s}
+.bzpGrid i:nth-child(6){background:#ff5c5c;animation-delay:.55s}
+.bzpGrid i:nth-child(7){background:#3ddc73;animation-delay:.65s}
+.bzpGrid i:nth-child(8){background:#3fc7fd;animation-delay:.75s}
+.bzpGrid i:nth-child(9){background:#fda801;animation-delay:.85s}
+@keyframes bzpPop{to{opacity:1;transform:scale(1) rotate(0)}}
+.bzpTitle{position:relative;font-family:'Arial Black',Impact,sans-serif;font-size:38px;font-weight:900;letter-spacing:2px;opacity:0;animation:bzpFade .8s .9s ease forwards;filter:drop-shadow(0 4px 10px rgba(0,10,60,.6));}
+.bzpTitle b{background:linear-gradient(180deg,#90e6fd,#3fc7fd 50%,#0394fd);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.bzpTitle span{background:linear-gradient(180deg,#fdd222,#fdb300 50%,#fda801);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.bzpTag{position:relative;margin-top:8px;font-size:12px;font-weight:700;letter-spacing:6px;color:#8fa6ff;opacity:0;animation:bzpFade .8s 1.2s ease forwards;}
+@keyframes bzpFade{to{opacity:1}}
+.bzpBarWrap{position:relative;width:min(260px,70vw);margin-top:44px;opacity:0;animation:bzpFade .6s 1.3s ease forwards;}
+.bzpTrack{height:8px;border-radius:8px;background:rgba(255,255,255,.12);overflow:hidden;}
+.bzpFill{height:100%;width:0%;border-radius:8px;background:linear-gradient(90deg,#3fc7fd,#a66bff,#fdc22a);box-shadow:0 0 12px rgba(120,170,255,.8);}
+.bzpInfo{display:flex;justify-content:space-between;margin-top:10px;font-size:12px;font-weight:600;color:#aab8ff;}
+.bzpVer{position:absolute;bottom:calc(18px + env(safe-area-inset-bottom,0px));font-size:11px;letter-spacing:1px;color:rgba(170,184,255,.55);}
+</style>
+<div id="bzpSplash">
+  <div class="bzpGlow"></div>
+  <div class="bzpGrid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="bzpTitle"><b>BLOCK</b><span>ZYRA</span></div>
+  <div class="bzpTag">PUZZLE GAME</div>
+  <div class="bzpBarWrap">
+    <div class="bzpTrack"><div class="bzpFill" id="bzpFill"></div></div>
+    <div class="bzpInfo"><span id="bzpMsg">Starting up</span><span id="bzpPct">0%</span></div>
+  </div>
+  <div class="bzpVer">v1.0.0</div>
+</div>
+<script>
+(function () {
+  var el = document.getElementById('bzpSplash');
+  if (!el) return;
+  var fill = document.getElementById('bzpFill');
+  var pct = document.getElementById('bzpPct');
+  var msg = document.getElementById('bzpMsg');
+  var steps = [[0, 'Starting up'], [30, 'Loading game'], [65, 'Preparing your board'], [90, 'Almost ready'], [100, 'Ready!']];
+  var MIN = 2600, MAX = 5000;
+  var t0 = Date.now();
+  var loaded = document.readyState === 'complete';
+  var p = 0, done = false;
+  window.addEventListener('load', function () { loaded = true; }, { once: true });
+  function setMsg(v) {
+    for (var i = steps.length - 1; i >= 0; i--) {
+      if (v >= steps[i][0]) { msg.textContent = steps[i][1]; break; }
+    }
+  }
+  var timer = setInterval(function () {
+    var spent = Date.now() - t0;
+    var target = (spent / MIN) * 100;
+    if (!loaded && spent < MAX) target = Math.min(target, 90);
+    if (target > 100) target = 100;
+    if (target > p) p = p + (target - p) * 0.25;
+    if (target - p < 0.5) p = target;
+    var shown = Math.floor(p);
+    fill.style.width = p + '%';
+    pct.textContent = shown + '%';
+    setMsg(shown);
+    if (p >= 100 && !done) {
+      done = true;
+      clearInterval(timer);
+      setTimeout(function () {
+        el.classList.add('bzpOut');
+        setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 700);
+      }, 450);
+    }
+  }, 50);
+})();
+</script>
+<!-- ===== BLOCKZYRA NEW STARTUP SCREEN (end) ===== -->
 </body>
 </html>
